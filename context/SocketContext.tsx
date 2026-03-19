@@ -1,6 +1,6 @@
 "use client";
 
-import socketUrl from "@/config/socketUrl"; // ✅ Use dedicated socket URL
+import socketUrl from "@/config/socketUrl";
 import {
   addNotification,
   startRinging,
@@ -15,7 +15,7 @@ import { io, Socket } from "socket.io-client";
 interface iSocketContextType {
   socket: Socket | null;
   isSocketConnected: boolean;
-  onlineUsers: SocketUser[]; // Optional
+  onlineUsers: SocketUser[];
 }
 
 export const SocketContext = createContext<iSocketContextType | null>(null);
@@ -67,16 +67,21 @@ export const SocketContextProvider = ({
       return;
     }
 
-    // ✅ No token passed
     const newSocket = io(socketUrl, {
       transports: ["websocket"],
+      withCredentials: true,
     });
 
     newSocket.on("connect", () => {
       console.log("✅ Socket connected:", newSocket.id);
 
       /* ────────── Join user's room ────────── */
-      newSocket.emit("join-room", user._id);
+      newSocket.emit("join-room", String(user._id));
+
+      /* ────────── Join agent room ────────── */
+      if (user?.role === "agent") {
+        newSocket.emit("join-agent-room");
+      }
 
       setSocket(newSocket);
       setIsSocketConnected(true);
@@ -99,7 +104,7 @@ export const SocketContextProvider = ({
         audioRef.current.currentTime = 0;
       }
     };
-  }, [user?._id]);
+  }, [user?._id, user?.role, dispatch]);
 
   /* ────────── play/pause sound based on isRinging ────────── */
   useEffect(() => {
@@ -150,7 +155,7 @@ export const SocketContextProvider = ({
       socket.off("getUsers", onGetUsers);
       socket.off("user-notification", onUserNotification);
     };
-  }, [socket]);
+  }, [socket, dispatch]);
 
   return (
     <SocketContext.Provider value={{ socket, isSocketConnected, onlineUsers }}>
