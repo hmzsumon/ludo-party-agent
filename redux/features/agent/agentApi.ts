@@ -1,27 +1,43 @@
+import { saveAccessToken } from "@/utils/authToken";
 import { IUser } from "../admin/adminApi";
 import { apiSlice } from "../api/apiSlice";
+import { setUser } from "../auth/authSlice";
 
 export const agentApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    /* ────────── Admin Login Mutations ────────── */
+    /* ────────── Agent Login Mutation ────────── */
     agentLogin: builder.mutation<IUser, any>({
       query: (body) => ({
         url: "/agent/login",
         method: "POST",
         body,
       }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const result = await queryFulfilled;
+
+          /* ────────── persist access token for socket auth ────────── */
+          saveAccessToken(result?.data?.token || null);
+
+          /* ────────── sync redux auth state ────────── */
+          dispatch(setUser(result.data));
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
-    // get agents from api with typescript
+
+    /* ────────── get agents ────────── */
     getAgents: builder.query<any, void>({
       query: () => "/agents",
     }),
 
-    // get agent by id from api with typescript
+    /* ────────── get agent by id ────────── */
     getAgentById: builder.query<any, string>({
       query: (id) => `/agents/${id}`,
     }),
 
-    // agent register
+    /* ────────── agent register ────────── */
     agentRegister: builder.mutation<any, any>({
       query: (body) => ({
         url: "/agent-register",
@@ -30,7 +46,7 @@ export const agentApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    // update agent
+    /* ────────── update agent ────────── */
     updateAgent: builder.mutation<any, any>({
       query: (body) => ({
         url: "/agents",
@@ -39,7 +55,7 @@ export const agentApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    // delete agent
+    /* ────────── delete agent ────────── */
     deleteAgent: builder.mutation<any, string>({
       query: (id) => ({
         url: `/agents/${id}`,

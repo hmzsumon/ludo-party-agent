@@ -7,6 +7,7 @@ import {
   stopRinging,
 } from "@/redux/features/notifications/notificationsSlice";
 import { SocketUser } from "@/types";
+import { getAccessToken } from "@/utils/authToken";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
@@ -58,27 +59,41 @@ export const SocketContextProvider = ({
   /* ────────── connect socket when user ready ────────── */
   useEffect(() => {
     if (!user || !user._id) {
-      /* ────────── user নাই => ensure stop ring + cleanup ────────── */
       dispatch(stopRinging());
+
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
+
       return;
     }
+
+    /* ────────── resolve token for socket auth ────────── */
+    const accessToken = getAccessToken();
+
+    /* ────────── socket debug ────────── */
+    console.log("/* ────────── agent notification socket debug ────────── */");
+    console.log("🌐 socket url:", socketUrl);
+    console.log("🔐 socket token:", accessToken ? "FOUND" : "MISSING");
+    console.log("👤 socket user:", String(user._id));
 
     const newSocket = io(socketUrl, {
       transports: ["websocket"],
       withCredentials: true,
+      auth: {
+        token: accessToken,
+      },
     });
 
+    /* ────────── debug connect ────────── */
     newSocket.on("connect", () => {
       console.log("✅ Socket connected:", newSocket.id);
 
-      /* ────────── Join user's room ────────── */
+      /* ────────── join personal room ────────── */
       newSocket.emit("join-room", String(user._id));
 
-      /* ────────── Join agent room ────────── */
+      /* ────────── join agent room ────────── */
       if (user?.role === "agent") {
         newSocket.emit("join-agent-room");
       }
@@ -87,8 +102,14 @@ export const SocketContextProvider = ({
       setIsSocketConnected(true);
     });
 
-    newSocket.on("disconnect", () => {
-      console.log("🔴 Socket disconnected");
+    /* ────────── debug connect error ────────── */
+    newSocket.on("connect_error", (err: any) => {
+      console.error("🔴 agent socket connect_error:", err?.message, err);
+    });
+
+    /* ────────── debug disconnect ────────── */
+    newSocket.on("disconnect", (reason) => {
+      console.log("🔴 Socket disconnected:", reason);
       setIsSocketConnected(false);
     });
 
@@ -97,8 +118,8 @@ export const SocketContextProvider = ({
       setSocket(null);
       setIsSocketConnected(false);
 
-      /* ────────── cleanup sound on disconnect ────────── */
       dispatch(stopRinging());
+
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
@@ -111,16 +132,12 @@ export const SocketContextProvider = ({
     if (!audioRef.current) return;
 
     if (isRinging) {
-      /* ────────── play loop while ringing ────────── */
       audioRef.current.currentTime = 0;
 
       audioRef.current.play().catch(() => {
-        /* ────────── autoplay blocked হলে ignore ──────────
-           user interaction (click) হলে পরে বাজবে
-        ──────────────────────────────────────────── */
+        /* ────────── autoplay blocked হলে ignore ────────── */
       });
     } else {
-      /* ────────── stop ring ────────── */
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
@@ -130,14 +147,12 @@ export const SocketContextProvider = ({
   useEffect(() => {
     if (!socket) return;
 
-    /* ────────── real-time notification ────────── */
     const onUserNotification = (payload: any) => {
       const n = payload?.notification;
 
       if (n?._id) {
         dispatch(addNotification(n));
 
-        /* ────────── start bell loop until user opens drawer/reads ────────── */
         if (!n?.is_read) dispatch(startRinging());
 
         toast.success(payload?.message || n?.title || "New notification");
