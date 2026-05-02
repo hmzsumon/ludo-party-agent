@@ -12,12 +12,11 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import depositMethodReducer from "./depositMethodSlice";
-import accountUIReducer from "./features/account/accountUISlice";
-import aiAccountUIReducer from "./features/ai-account/ai-accountUISlice";
+
 import { apiSlice } from "./features/api/apiSlice";
 import authReducer from "./features/auth/authSlice";
 import kycReducer from "./features/kyc/kycSlice";
-import tradeReducer from "./features/trade/tradeSlice";
+
 import sidebarReducer from "./features/ui/sidebarSlice";
 import uiReducer from "./features/ui/uiSlice";
 import walletReducer from "./features/wallet/walletSlice";
@@ -45,10 +44,8 @@ export const rootReducer = combineReducers({
   sidebar: sidebarReducer,
   wallet: walletReducer,
   ui: uiReducer,
-  accountUI: accountUIReducer,
+
   kyc: kycReducer,
-  trade: tradeReducer,
-  aiAccountUI: aiAccountUIReducer,
 
   notifications: notificationsReducer,
 });
