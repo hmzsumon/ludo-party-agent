@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getAgentTypeFromUser } from "@/lib/agentAccess";
 import { useCreateMyPaymentMethodMutation } from "@/redux/features/agent/agentFinanceApi";
 import { fetchBaseQueryError } from "@/redux/services/helpers";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +33,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { z } from "zod";
 
 const methodNameOptions = [
@@ -62,6 +64,8 @@ type FormValues = z.infer<typeof schema>;
 
 export default function AddPaymentMethodPage() {
   const router = useRouter();
+  const user = useSelector((state: any) => state.auth.user);
+  const agentType = getAgentTypeFromUser(user);
 
   const [createMyPaymentMethod, createState] =
     useCreateMyPaymentMethodMutation();
@@ -122,6 +126,54 @@ export default function AddPaymentMethodPage() {
       // router.push("/wallet/my-payment-methods");
     }
   }, [isError, isSuccess, error, data, form, router]);
+
+  if (agentType === "cash") {
+    return (
+      <div className="mx-auto w-full max-w-xl px-4 py-6">
+        <Card className="border-red-500/20 bg-red-500/10 text-white">
+          <CardHeader>
+            <CardTitle>Access denied</CardTitle>
+            <CardDescription className="text-red-100/80">
+              cash type agent Wallet option ব্যবহার করতে পারবে না।
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => router.push("/dashboard")}>
+              Back to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (agentType === "e-wallet") {
+    return (
+      <div className="mx-auto w-full max-w-xl px-4 py-6">
+        <Card className="border-amber-500/20 bg-amber-500/10 text-white">
+          <CardHeader>
+            <CardTitle>Payment Method Add বন্ধ</CardTitle>
+            <CardDescription className="text-amber-100/80">
+              e-wallet type agent নতুন payment method add করতে পারবে না। Admin
+              থেকে assign করা method থাকলে My Payment Methods পেজে গিয়ে শুধু
+              number এবং methodType edit করতে পারবে।
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-2">
+            <Button onClick={() => router.push("/wallet/my-payment-methods")}>
+              My Payment Methods
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => router.push("/dashboard")}
+            >
+              Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-xl px-4 py-6">

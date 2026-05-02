@@ -5,11 +5,14 @@ import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SidebarGroupItem from "./SidebarGroupItem";
+import { filterNavItemsByAgentType } from "./filterNavItems";
 import { NAV_ITEMS } from "./sidebar-data";
 
 /* ── desktop sidebar (collapsible) ─────────────────────────── */
 export default function DesktopSidebar() {
   const collapsed = useSelector((s: any) => s.ui.sidebarCollapsed) as boolean;
+  const user = useSelector((s: any) => s.auth.user);
+  const navItems = filterNavItemsByAgentType(NAV_ITEMS, user);
   const dispatch = useDispatch();
 
   // group open state (only relevant when not collapsed)
@@ -34,15 +37,17 @@ export default function DesktopSidebar() {
     >
       {/* top groups */}
       <div className="space-y-1">
-        {NAV_ITEMS.filter((i) => i.section !== "bottom").map((i) => (
-          <SidebarGroupItem
-            key={i.key}
-            item={i}
-            collapsed={collapsed}
-            open={!!open[i.key]}
-            onToggle={toggle}
-          />
-        ))}
+        {navItems
+          .filter((i) => i.section !== "bottom")
+          .map((i) => (
+            <SidebarGroupItem
+              key={i.key}
+              item={i}
+              collapsed={collapsed}
+              open={!!open[i.key]}
+              onToggle={toggle}
+            />
+          ))}
       </div>
 
       {/* invite card */}
@@ -50,15 +55,17 @@ export default function DesktopSidebar() {
 
       {/* bottom groups */}
       <div className="mt-4 space-y-1">
-        {NAV_ITEMS.filter((i) => i.section === "bottom").map((i) => (
-          <SidebarGroupItem
-            key={i.key}
-            item={i}
-            collapsed={collapsed}
-            open={!!open[i.key]}
-            onToggle={toggle}
-          />
-        ))}
+        {navItems
+          .filter((i) => i.section === "bottom")
+          .map((i) => (
+            <SidebarGroupItem
+              key={i.key}
+              item={i}
+              collapsed={collapsed}
+              open={!!open[i.key]}
+              onToggle={toggle}
+            />
+          ))}
       </div>
 
       {/* collapse control */}

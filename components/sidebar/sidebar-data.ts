@@ -1,14 +1,11 @@
 // Central place to edit menu items
 import type { LucideIcon } from "lucide-react";
 import {
-  Clock4,
   Download,
   Grid2x2,
   LifeBuoy,
   MessageSquare,
-  Settings,
   SquareGanttChart,
-  Upload,
   Users,
   Wallet,
 } from "lucide-react";
@@ -26,11 +23,11 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", label: "Dashboard", icon: Grid2x2, href: "/dashboard" },
-  { key: "users", label: "All Users", icon: Users, href: "/users" },
+  { key: "users", label: "User Pending Deposits", icon: Users, href: "/users" },
 
   {
     key: "deposits",
-    label: "Deposits",
+    label: "Agent Deposits",
     icon: Download,
 
     children: [
@@ -38,20 +35,6 @@ export const NAV_ITEMS: NavItem[] = [
       {
         label: "Manual Deposits",
         href: "/deposits/manual",
-      },
-    ],
-  },
-
-  {
-    key: "withdraw",
-    label: "Withdrawals",
-    icon: Upload,
-
-    children: [
-      { label: "All Withdrawals", href: "/withdrawals/all" },
-      {
-        label: "Pending Withdrawals",
-        href: "/withdrawals/pending",
       },
     ],
   },
@@ -69,24 +52,15 @@ export const NAV_ITEMS: NavItem[] = [
       },
     ],
   },
-  {
-    key: "history",
-    label: "Transaction history",
-    icon: Clock4,
-    href: "/dashboard/history",
-  },
 
   {
-    key: "settings",
-    label: "Settings",
-    icon: Settings,
+    key: "vip-agent",
+    label: "VIP Agent",
+    icon: Wallet,
 
     children: [
-      { label: "Profile", href: "/settings/profile" },
-      {
-        label: "Security",
-        href: "/settings/security",
-      },
+      { label: "VIP Agent", href: "/wallet/add-payment-method" },
+      { label: "Comission", href: "/wallet/add-payment-method" },
     ],
   },
 

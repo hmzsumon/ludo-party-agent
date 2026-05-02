@@ -1,8 +1,10 @@
 "use client";
 
+import { getAgentTypeFromUser } from "@/lib/agentAccess";
 import { Loader2, Pencil, Star } from "lucide-react";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,6 +47,10 @@ const methodNameOptions = ["Bkash", "Nagad", "Rocket", "Bank"] as const;
 const methodTypeOptions = ["agent", "personal", "bank"] as const;
 
 export default function PaymentMethodManagerPage() {
+  const user = useSelector((state: any) => state.auth.user);
+  const agentType = getAgentTypeFromUser(user);
+  const isEWallet = agentType === "e-wallet";
+
   const { data, isLoading, isError, error, refetch } =
     useGetMyPaymentMethodsQuery();
 
@@ -83,13 +89,23 @@ export default function PaymentMethodManagerPage() {
   const saveEdit = async () => {
     if (!editing?._id) return;
 
-    const body: any = {
-      accountNumber: accountNumber.trim(),
-      methodName,
-      methodType,
-    };
+    const body: any = isEWallet
+      ? {
+          // ✅ e-wallet agent শুধু number এবং methodType change করতে পারবে
+          accountNumber: accountNumber.trim(),
+          methodType,
+        }
+      : {
+          accountNumber: accountNumber.trim(),
+          methodName,
+          methodType,
+        };
 
-    if (!body.accountNumber || !body.methodName || !body.methodType) {
+    if (
+      !body.accountNumber ||
+      !body.methodType ||
+      (!isEWallet && !body.methodName)
+    ) {
       toast.error("সবগুলো ফিল্ড দিন");
       return;
     }
@@ -160,14 +176,38 @@ export default function PaymentMethodManagerPage() {
         <Button variant="secondary" onClick={() => refetch()} disabled={busy}>
           Refresh
         </Button>
-        <Button
-          onClick={() => (window.location.href = "/wallet/add-payment-method")}
-        >
-          + Add
-        </Button>
+
+        {/* ────────── e-wallet agent নতুন payment method add করতে পারবে না ────────── */}
+        {!isEWallet ? (
+          <Button
+            onClick={() =>
+              (window.location.href = "/wallet/add-payment-method")
+            }
+          >
+            + Add
+          </Button>
+        ) : null}
       </div>
     );
-  }, [busy, refetch]);
+  }, [busy, refetch, isEWallet]);
+
+  if (agentType === "cash") {
+    return (
+      <div className="mx-auto w-full max-w-2xl px-4 py-6">
+        <Card className="border-red-500/20 bg-red-500/10 text-white">
+          <CardHeader>
+            <CardTitle>Access denied</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-sm text-red-100/80">
+            <p>cash type agent Wallet option ব্যবহার করতে পারবে না।</p>
+            <Button onClick={() => (window.location.href = "/dashboard")}>
+              Back to Dashboard
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (isError) {
     const msg =
@@ -213,15 +253,24 @@ export default function PaymentMethodManagerPage() {
             </div>
           ) : list.length === 0 ? (
             <div className="rounded-xl border border-neutral-800 bg-neutral-900/40 p-4 text-sm text-neutral-300">
-              এখনও কোনো payment method নেই।{" "}
-              <button
-                className="underline"
-                onClick={() =>
-                  (window.location.href = "/wallet/add-payment-method")
-                }
-              >
-                Add Payment Method
-              </button>
+              {isEWallet ? (
+                <>
+                  আপনার জন্য এখনো কোনো payment method assign করা নেই। Admin থেকে
+                  Bkash/Nagad/Rocket method assign করলে এখানে edit করতে পারবেন।
+                </>
+              ) : (
+                <>
+                  এখনও কোনো payment method নেই।{" "}
+                  <button
+                    className="underline"
+                    onClick={() =>
+                      (window.location.href = "/wallet/add-payment-method")
+                    }
+                  >
+                    Add Payment Method
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             list.map((pm) => {
@@ -282,41 +331,49 @@ export default function PaymentMethodManagerPage() {
                           Edit
                         </Button>
 
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          onClick={() => onToggle(pm._id)}
-                          disabled={busy}
-                        >
-                          {toggleState.isLoading ? (
-                            <span className="inline-flex items-center gap-2">
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              Updating...
-                            </span>
-                          ) : isActive ? (
-                            "Deactivate"
-                          ) : (
-                            "Activate"
-                          )}
-                        </Button>
+                        {!isEWallet ? (
+                          <>
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              onClick={() => onToggle(pm._id)}
+                              disabled={busy}
+                            >
+                              {toggleState.isLoading ? (
+                                <span className="inline-flex items-center gap-2">
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                  Updating...
+                                </span>
+                              ) : isActive ? (
+                                "Deactivate"
+                              ) : (
+                                "Activate"
+                              )}
+                            </Button>
 
-                        {!isDefault ? (
-                          <Button
-                            size="sm"
-                            onClick={() => onMakeDefault(pm._id)}
-                            disabled={busy || !isActive}
-                            title={
-                              !isActive
-                                ? "Inactive method cannot be default"
-                                : ""
-                            }
-                          >
-                            Set Default
-                          </Button>
+                            {!isDefault ? (
+                              <Button
+                                size="sm"
+                                onClick={() => onMakeDefault(pm._id)}
+                                disabled={busy || !isActive}
+                                title={
+                                  !isActive
+                                    ? "Inactive method cannot be default"
+                                    : ""
+                                }
+                              >
+                                Set Default
+                              </Button>
+                            ) : (
+                              <Button size="sm" disabled>
+                                Default
+                              </Button>
+                            )}
+                          </>
                         ) : (
-                          <Button size="sm" disabled>
-                            Default
-                          </Button>
+                          <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">
+                            e-wallet: edit only
+                          </span>
                         )}
 
                         {/* ✅ Delete (soft delete / hide) */}
@@ -358,7 +415,11 @@ export default function PaymentMethodManagerPage() {
           <div className="space-y-4 px-4 pb-2">
             <div className="space-y-2">
               <Label className="text-neutral-200">Method Name</Label>
-              <Select value={methodName} onValueChange={setMethodName}>
+              <Select
+                value={methodName}
+                onValueChange={setMethodName}
+                disabled={isEWallet}
+              >
                 <SelectTrigger className="border-neutral-800 bg-neutral-900 text-white">
                   <SelectValue placeholder="Select method" />
                 </SelectTrigger>
@@ -370,6 +431,12 @@ export default function PaymentMethodManagerPage() {
                   ))}
                 </SelectContent>
               </Select>
+              {isEWallet ? (
+                <p className="text-xs text-neutral-400">
+                  e-wallet agent method name change করতে পারবে না। শুধু number
+                  এবং methodType edit করা যাবে।
+                </p>
+              ) : null}
             </div>
 
             <div className="space-y-2">

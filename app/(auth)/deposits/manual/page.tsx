@@ -3,12 +3,14 @@
 /* ────────── imports ────────── */
 import Button from "@/components/new-ui/Button";
 import Card from "@/components/new-ui/Card";
+import { isCashAgent } from "@/lib/agentAccess";
 import {
   useCreateManualDepositMutation,
   useLazyPreviewManualDepositQuery,
 } from "@/redux/features/deposit/depositApi";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 // ✅ react-hot-toast
 import { toast } from "react-hot-toast";
@@ -38,6 +40,8 @@ type PreviewData = {
 
 export default function AdminManualDepositPage() {
   const router = useRouter();
+  const user = useSelector((state: any) => state.auth.user);
+  const canUseManualDeposit = isCashAgent(user);
 
   /* ────────── local state ────────── */
   const [customerId, setCustomerId] = useState("");
@@ -102,6 +106,27 @@ export default function AdminManualDepositPage() {
   };
 
   /* ────────── UI ────────── */
+  if (!canUseManualDeposit) {
+    return (
+      <main className="min-h-screen bg-[#0B0D12] p-6 text-[#E6E6E6]">
+        <div className="mx-auto max-w-2xl rounded-2xl border border-red-500/20 bg-red-500/10 p-5">
+          <h2 className="text-lg font-semibold text-red-200">Access denied</h2>
+          <p className="mt-2 text-sm text-red-100/80">
+            Manual Deposit শুধু cash type agent ব্যবহার করতে পারবে। আপনার agent
+            type e-wallet হলে এই option বন্ধ থাকবে।
+          </p>
+          <button
+            type="button"
+            onClick={() => router.push("/dashboard")}
+            className="mt-4 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black"
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#0B0D12] text-[#E6E6E6]">
       {/* If you already have a global <Toaster />, remove this */}

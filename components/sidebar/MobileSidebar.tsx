@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import SidebarBalanceAccordion from "./SidebarBalanceAccordion";
 import SidebarGroupItem from "./SidebarGroupItem";
 import SidebarInviteCard from "./SidebarInviteCard";
 import SidebarUserBlock from "./SidebarUserBlock";
+import { filterNavItemsByAgentType } from "./filterNavItems";
 import { NAV_ITEMS } from "./sidebar-data";
 
 /* ── mobile sidebar (drawer) ───────────────────────────────── */
@@ -13,6 +15,8 @@ type Props = { open: boolean; onClose: () => void };
 
 export default function MobileSidebar({ open, onClose }: Props) {
   const [expand, setExpand] = useState<Record<string, boolean>>({});
+  const user = useSelector((s: any) => s.auth.user);
+  const navItems = filterNavItemsByAgentType(NAV_ITEMS, user);
   const toggle = (key: string) => setExpand((s) => ({ ...s, [key]: !s[key] }));
 
   return (
@@ -44,15 +48,17 @@ export default function MobileSidebar({ open, onClose }: Props) {
 
           {/* groups (top) */}
           <div className="space-y-1">
-            {NAV_ITEMS.filter((i) => i.section !== "bottom").map((i) => (
-              <SidebarGroupItem
-                key={i.key}
-                item={i}
-                open={!!expand[i.key]}
-                onToggle={toggle}
-                onLeafClick={onClose}
-              />
-            ))}
+            {navItems
+              .filter((i) => i.section !== "bottom")
+              .map((i) => (
+                <SidebarGroupItem
+                  key={i.key}
+                  item={i}
+                  open={!!expand[i.key]}
+                  onToggle={toggle}
+                  onLeafClick={onClose}
+                />
+              ))}
           </div>
 
           {/* invite */}
@@ -60,15 +66,17 @@ export default function MobileSidebar({ open, onClose }: Props) {
 
           {/* bottom section */}
           <div className="mt-4 space-y-1">
-            {NAV_ITEMS.filter((i) => i.section === "bottom").map((i) => (
-              <SidebarGroupItem
-                key={i.key}
-                item={i}
-                open={!!expand[i.key]}
-                onToggle={toggle}
-                onLeafClick={onClose}
-              />
-            ))}
+            {navItems
+              .filter((i) => i.section === "bottom")
+              .map((i) => (
+                <SidebarGroupItem
+                  key={i.key}
+                  item={i}
+                  open={!!expand[i.key]}
+                  onToggle={toggle}
+                  onLeafClick={onClose}
+                />
+              ))}
           </div>
 
           {/* footer: close entry (optional quick close) */}
