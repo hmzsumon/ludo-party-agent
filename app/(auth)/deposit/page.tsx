@@ -1,7 +1,6 @@
 "use client";
 
 import { TriangleAlert } from "lucide-react";
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import DepositItemCard, {
@@ -19,6 +18,17 @@ import UsdtIcon from "@/public/images/deposit/usdt-trc20.svg";
 /* ── data: payment methods ──────────────────────────────────── */
 const ALL_ITEMS: DepositItem[] = [
   {
+    key: "binance-pay",
+    name: "BinancePay",
+    Icon: BinanceIcon,
+    colorClass: "text-neutral-300",
+    processing: "Instant – 30 minutes",
+    fee: "0%",
+    limits: "10 – 20,000 USD",
+    status: "available",
+    tags: ["Crypto", "Wallet"],
+  },
+  {
     key: "bep-20",
     name: "Tether (USDT TRC20)",
     Icon: UsdtIcon,
@@ -28,17 +38,6 @@ const ALL_ITEMS: DepositItem[] = [
     limits: "10 – 200,000 USD",
     status: "available",
     tags: ["Crypto", "TRON"],
-  },
-  {
-    key: "binance-pay",
-    name: "BinancePay",
-    Icon: BinanceIcon,
-    colorClass: "text-neutral-300",
-    processing: "Instant – 30 minutes",
-    fee: "0%",
-    limits: "10 – 20,000 USD",
-    status: "unavailable",
-    tags: ["Crypto", "Wallet"],
   },
 
   {
@@ -115,12 +114,12 @@ export default function DepositPage() {
   }, [q, tag]);
 
   return (
-    <div className="mx-auto max-w-6xl px-3 py-4 md:px-6 md:py-6">
+    <div className="mx-auto max-w-6xl px-2 py-4 ">
       {/* ── header row ───────────────────────────────────────── */}
       <div className="mb-4 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-        <h1 className="text-xl font-semibold text-white">Deposit</h1>
+        <h1 className="text-sm font-semibold text-white">Deposit methods</h1>
 
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Link
             href="/learn/deposit"
             className="rounded-lg border border-emerald-700/30 bg-emerald-500/10 px-3 py-1.5 text-sm text-emerald-300 hover:bg-emerald-500/15"
@@ -133,7 +132,7 @@ export default function DepositPage() {
           >
             Complete profile
           </Link>
-        </div>
+        </div> */}
       </div>
 
       {/* ── verification banner ──────────────────────────────── */}

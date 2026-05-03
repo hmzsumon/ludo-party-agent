@@ -23,15 +23,20 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", label: "Dashboard", icon: Grid2x2, href: "/dashboard" },
-  { key: "users", label: "User Pending Deposits", icon: Users, href: "/users" },
+  {
+    key: "pending",
+    label: "User Pending Deposits",
+    icon: Users,
+    href: "/deposits/pending",
+  },
 
   {
-    key: "deposits",
+    key: "agent-deposits",
     label: "Agent Deposits",
     icon: Download,
 
     children: [
-      { label: "All Deposits", href: "/deposits/all" },
+      { label: "Deposits Requests", href: "/deposit" },
       {
         label: "Manual Deposits",
         href: "/deposits/manual",

@@ -8,8 +8,7 @@
 
 import { useGetAllDepositRequestsQuery } from "@/redux/features/deposit/depositApi";
 import { useGetAllWithdrawRequestsQuery } from "@/redux/features/withdraw/withdrawApi";
-import { ExternalLink, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import RecentTransactionItem from "./RecentTransactionItem";
 
 /* ── unified transaction type ── */
@@ -76,12 +75,12 @@ export default function RecentTransactionsList() {
         <h2 className="text-base font-semibold text-white">
           Recent transactions
         </h2>
-        <Link
+        {/* <Link
           href="/deposits/all"
           className="text-blue-400 hover:text-blue-300 transition-colors"
         >
           <ExternalLink size={16} />
-        </Link>
+        </Link> */}
       </div>
 
       {/* ── লোডিং অবস্থা ── */}

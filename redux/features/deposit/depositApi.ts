@@ -226,6 +226,19 @@ export const depositApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Deposits"],
     }),
+
+    /* ────────── binance payment: ────────── */
+    confirmBinanceDeposit: builder.mutation<
+      any,
+      { depositId: string; orderId: string }
+    >({
+      query: ({ depositId, orderId }) => ({
+        url: `/binance-payment/${depositId}/retry`,
+        method: "POST",
+        body: { orderId },
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -249,4 +262,6 @@ export const {
 
   useApproveDepositByAgentMutation,
   useRejectDepositByAgentMutation,
+
+  useConfirmBinanceDepositMutation,
 } = depositApi;

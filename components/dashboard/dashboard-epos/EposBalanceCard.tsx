@@ -40,7 +40,9 @@ export default function EposBalanceCard({
     <div className="rounded-t-xl bg-[#1a1a2e] px-5 pt-5 pb-4">
       {/* ── সারি ১: EPOS limit লেবেল + eye icon ── */}
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs text-gray-400 tracking-wide">EPOS limit</span>
+        <span className="text-xs text-gray-400 tracking-wide">
+          Current Balance
+        </span>
         <button
           onClick={() => setHidden((p) => !p)}
           className="text-gray-400 hover:text-white transition-colors"
@@ -50,17 +52,17 @@ export default function EposBalanceCard({
       </div>
 
       {/* ── সারি ২: EPOS limit মূল্য (বড়) ── */}
-      <p className="text-2xl font-bold text-white tracking-tight">
+      <p className="text-xl font-bold text-white tracking-tight">
         {isLoading ? "..." : hidden ? mask : fmtDiamond(eposLimit)}
       </p>
 
       {/* ── সারি ৩: Balance ── */}
-      <p className="text-sm text-gray-400 mt-0.5">
+      {/* <p className="text-sm text-gray-400 mt-0.5">
         Balance:{" "}
         <span className="text-gray-200">
           {isLoading ? "..." : hidden ? mask : fmtDiamond(balance)}
         </span>
-      </p>
+      </p> */}
 
       {/* ── Progress bar (নীল) ── */}
       <div className="mt-3 h-1.5 w-full rounded-full bg-[#2a2a45] overflow-hidden">

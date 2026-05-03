@@ -114,11 +114,11 @@ export default function SingleWithdraw({
   /* ────────── UI ────────── */
   return (
     <main className="min-h-screen bg-[#0B0D12] text-[#E6E6E6]">
-      <div className="mx-auto max-w-5xl px-2 py-4 sm:p-6">
-        <Card className="px-4 overflow-hidden">
+      <div className="mx-auto max-w-5xl px-1 py-4 sm:p-6">
+        <Card className="px-2 overflow-hidden">
           {/* ────────── header ────────── */}
           <div className="border-b border-white/10 p-6 text-center">
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-sm font-semibold">
               <span
                 className={`mr-2 ${
                   status === "pending"
@@ -135,7 +135,7 @@ export default function SingleWithdraw({
           </div>
 
           {/* ────────── content ────────── */}
-          <div className="px-2 py-4">
+          <div className=" py-4">
             <div className="rounded-lg border border-white/10">
               <div className="grid border border-white/10 grid-cols-2 gap-2 ">
                 <div className="border-r border-white/10">

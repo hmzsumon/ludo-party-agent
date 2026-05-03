@@ -99,15 +99,7 @@ const AllDepositPage = () => {
 
   /* ────────── columns ────────── */
   const columns: GridColDef<Deposit & { id: string }>[] = [
-    {
-      field: "createdAt",
-      headerName: "Created At",
-      width: 160,
-      renderCell: (p) => (
-        <span className="text-xs">{fmtDate(p.row.createdAt)}</span>
-      ),
-    },
-    { field: "customerId", headerName: "Customer ID", width: 120 },
+    { field: "customerId", headerName: "Customer ID", width: 100 },
     { field: "name", headerName: "Name", width: 160 },
 
     {
@@ -149,7 +141,7 @@ const AllDepositPage = () => {
     },
     {
       field: "view",
-      headerName: "",
+      headerName: "View",
       width: 72,
       align: "center",
       headerAlign: "center",
