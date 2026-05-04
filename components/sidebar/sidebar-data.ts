@@ -1,6 +1,7 @@
 // Central place to edit menu items
 import type { LucideIcon } from "lucide-react";
 import {
+  Crown,
   Download,
   Grid2x2,
   LifeBuoy,
@@ -35,13 +36,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Agent Deposits",
     icon: Download,
 
-    children: [
-      { label: "Deposits Requests", href: "/deposit" },
-      {
-        label: "Manual Deposits",
-        href: "/deposits/manual",
-      },
-    ],
+    children: [{ label: "Deposits Requests", href: "/deposit" }],
   },
 
   {
@@ -61,12 +56,9 @@ export const NAV_ITEMS: NavItem[] = [
   {
     key: "vip-agent",
     label: "VIP Agent",
-    icon: Wallet,
+    icon: Crown,
 
-    children: [
-      { label: "VIP Agent", href: "/wallet/add-payment-method" },
-      { label: "Comission", href: "/wallet/add-payment-method" },
-    ],
+    children: [{ label: "VIP Agent", href: "/vip-agent" }],
   },
 
   {

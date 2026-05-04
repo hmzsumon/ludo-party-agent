@@ -3,7 +3,6 @@
 /* ────────── imports ────────── */
 import Button from "@/components/new-ui/Button";
 import Card from "@/components/new-ui/Card";
-import { isCashAgent } from "@/lib/agentAccess";
 import {
   useCreateManualDepositMutation,
   useLazyPreviewManualDepositQuery,
@@ -16,11 +15,8 @@ import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 
 /* ────────── helpers ────────── */
-const fmtUSD = (n?: number) =>
-  Number(n ?? 0).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
+const fmtDiamond = (n?: number) =>
+  `💎 ${Number(n ?? 0).toLocaleString("en-US")}`;
 
 /* ────────── types ────────── */
 type PreviewData = {
@@ -41,7 +37,6 @@ type PreviewData = {
 export default function AdminManualDepositPage() {
   const router = useRouter();
   const user = useSelector((state: any) => state.auth.user);
-  const canUseManualDeposit = isCashAgent(user);
 
   /* ────────── local state ────────── */
   const [customerId, setCustomerId] = useState("");
@@ -105,35 +100,13 @@ export default function AdminManualDepositPage() {
     setNote("");
   };
 
-  /* ────────── UI ────────── */
-  if (!canUseManualDeposit) {
-    return (
-      <main className="min-h-screen bg-[#0B0D12] p-6 text-[#E6E6E6]">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-red-500/20 bg-red-500/10 p-5">
-          <h2 className="text-lg font-semibold text-red-200">Access denied</h2>
-          <p className="mt-2 text-sm text-red-100/80">
-            Manual Deposit শুধু cash type agent ব্যবহার করতে পারবে। আপনার agent
-            type e-wallet হলে এই option বন্ধ থাকবে।
-          </p>
-          <button
-            type="button"
-            onClick={() => router.push("/dashboard")}
-            className="mt-4 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-black"
-          >
-            Back to Dashboard
-          </button>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main className="min-h-screen bg-[#0B0D12] text-[#E6E6E6]">
       {/* If you already have a global <Toaster />, remove this */}
 
-      <div className="mx-auto max-w-4xl py-4 md:p-8">
+      <div className="mx-auto max-w-4xl px-2 py-4 md:p-8">
         <h2 className="mb-4 text-base font-semibold tracking-tight">
-          Agent Manual Deposit
+          Manual Deposit
         </h2>
 
         {/* ────────── form card ────────── */}
@@ -141,33 +114,33 @@ export default function AdminManualDepositPage() {
           <div className="grid gap-3 sm:grid-cols-2">
             {/* Customer ID */}
             <div>
-              <label className="mb-1 block text-sm text-white/70">
-                Customer UID
+              <label className="mb-1 ml-1 block text-sm text-white/70">
+                Player UID
               </label>
               <input
                 value={customerId}
                 onChange={(e) => setCustomerId(e.target.value)}
-                placeholder="U2025XX"
+                placeholder="2025XX"
                 className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-white/10"
               />
             </div>
 
             {/* Amount */}
             <div>
-              <label className="mb-1 block text-sm text-white/70">
-                Amount (BDT)
+              <label className="mb-1 ml-1 block text-sm text-white/70">
+                Enter Amount
               </label>
               <input
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 inputMode="decimal"
-                placeholder="100"
+                placeholder="💎 100"
                 className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-white/10"
               />
             </div>
 
             {/* Note (optional) */}
-            <div className="sm:col-span-2">
+            {/* <div className="sm:col-span-2">
               <label className="mb-1 block text-sm text-white/70">
                 Note (optional)
               </label>
@@ -177,7 +150,7 @@ export default function AdminManualDepositPage() {
                 placeholder="Any note for audit"
                 className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-white/10"
               />
-            </div>
+            </div> */}
           </div>
 
           {/* ────────── actions ────────── */}
@@ -212,7 +185,6 @@ export default function AdminManualDepositPage() {
               <div className="grid gap-3 sm:grid-cols-2">
                 <Field label="Name" value={preview.user.name} />
                 <Field label="Customer ID" value={preview.user.customerId} />
-                <Field label="Email" value={preview.user.email} />
                 <Field label="Phone" value={preview.user.phone || "-"} />
               </div>
 
@@ -220,16 +192,8 @@ export default function AdminManualDepositPage() {
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 <Stat
                   title="Deposit Amount"
-                  value={fmtUSD(preview.amount)}
+                  value={fmtDiamond(preview.amount)}
                   accent
-                />
-                <Stat
-                  title="Current M-Balance"
-                  value={fmtUSD(preview.current.m_balance)}
-                />
-                <Stat
-                  title="Next M-Balance"
-                  value={fmtUSD(preview.next.m_balance)}
                 />
               </div>
 

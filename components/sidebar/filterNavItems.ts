@@ -16,15 +16,6 @@ export function filterNavItemsByAgentType(items: NavItem[], user: any) {
         return null;
       }
 
-      if (agentType === "e-wallet" && item.key === "deposits") {
-        return {
-          ...item,
-          children: item.children?.filter(
-            (child) => child.href !== "/deposits/manual",
-          ),
-        };
-      }
-
       if (agentType === "e-wallet" && item.key === "wallet") {
         return {
           ...item,

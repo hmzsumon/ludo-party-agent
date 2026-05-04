@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import SidebarBalanceAccordion from "./SidebarBalanceAccordion";
 import SidebarGroupItem from "./SidebarGroupItem";
-import SidebarInviteCard from "./SidebarInviteCard";
 import SidebarUserBlock from "./SidebarUserBlock";
 import { filterNavItemsByAgentType } from "./filterNavItems";
 import { NAV_ITEMS } from "./sidebar-data";
@@ -43,9 +41,6 @@ export default function MobileSidebar({ open, onClose }: Props) {
           {/* user */}
           <SidebarUserBlock />
 
-          {/* balance */}
-          <SidebarBalanceAccordion />
-
           {/* groups (top) */}
           <div className="space-y-1">
             {navItems
@@ -60,9 +55,6 @@ export default function MobileSidebar({ open, onClose }: Props) {
                 />
               ))}
           </div>
-
-          {/* invite */}
-          <SidebarInviteCard />
 
           {/* bottom section */}
           <div className="mt-4 space-y-1">

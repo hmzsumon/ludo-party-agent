@@ -3,7 +3,6 @@
 /* ────────── imports ────────── */
 import CustomLoadingOverlay from "@/components/CustomLoadingOverlay";
 import CustomNoRowsOverlay from "@/components/CustomNoRowsOverlay";
-import Card from "@/components/new-ui/Card";
 import { Tab } from "@/components/new-ui/Tabs";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Link from "next/link";
@@ -182,37 +181,11 @@ const PendingDepositPage = () => {
   return (
     <main className="min-h-screen bg-[#0B0D12] text-[#E6E6E6]">
       <div className="mx-auto max-w-7xl py-4 md:p-8">
-        <h2 className="mb-4 text-2xl font-semibold tracking-tight">
-          Pending Deposit
+        <h2 className="mb-4 ml-1 text-base font-semibold tracking-tight">
+          Pending Deposit: {filtered.length}
         </h2>
 
         {/* ────────── summary cards ────────── */}
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <Card>
-            <div className="flex items-center gap-2">
-              <span className="text-white/60">Total Requests</span>
-              <span className="ml-auto text-lg font-semibold">
-                {filtered.length}
-              </span>
-            </div>
-          </Card>
-          <Card>
-            <div className="flex items-center gap-3">
-              <span className="text-white/60">Amount</span>
-              <span className="ml-auto text-lg font-semibold">
-                {fmtUSD(totalAmount)}
-              </span>
-            </div>
-          </Card>
-          <Card>
-            <div className="flex items-center gap-3">
-              <span className="text-white/60">Received</span>
-              <span className="ml-auto text-lg font-semibold text-emerald-400">
-                {fmtUSD(totalReceived)}
-              </span>
-            </div>
-          </Card>
-        </div>
 
         {/* ────────── table ────────── */}
         <div className="mt-4 h-[calc(100vh-320px)]">
