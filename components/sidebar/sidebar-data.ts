@@ -25,7 +25,7 @@ export type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", label: "Dashboard", icon: Grid2x2, href: "/dashboard" },
   {
-    key: "pending",
+    key: "pending-deposits",
     label: "User Pending Deposits",
     icon: Users,
     href: "/deposits/pending",

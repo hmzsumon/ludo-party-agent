@@ -8,8 +8,23 @@
 
 import { ArrowDownToLine, ArrowUpToLine } from "lucide-react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
-export default function DepositWithdrawButtons() {
+type DepositWithdrawButtonsProps = {
+  agentType?: string;
+};
+
+export default function DepositWithdrawButtons({
+  agentType,
+}: DepositWithdrawButtonsProps) {
+  const { user } = useSelector((state: any) => state.auth);
+
+  /* ── Agent type cash হলে নতুন Cash Withdraw page এ যাবে ── */
+  const withdrawHref =
+    user?.agentType?.toLowerCase() === "cash"
+      ? "/cash-withdraw"
+      : "/withdrawals/pending";
+
   return (
     /* ── দুটো বাটন পাশাপাশি ── */
     <div className="grid grid-cols-2 gap-2 mt-2">
@@ -24,7 +39,7 @@ export default function DepositWithdrawButtons() {
       </Link>
 
       {/* ── Withdraw বাটন (লাল) ── */}
-      <Link href="/withdrawals/pending">
+      <Link href={withdrawHref}>
         <div className="flex flex-col items-center justify-center gap-1.5 rounded-b-xl bg-[#1a1a2e] border border-[#2a2a45] py-2 hover:bg-[#2a1a1a] hover:border-red-700/50 transition-all cursor-pointer">
           <div className="w-6 h-6 rounded-full border border-red-500 flex items-center justify-center">
             <ArrowUpToLine size={13} className="text-red-400" />

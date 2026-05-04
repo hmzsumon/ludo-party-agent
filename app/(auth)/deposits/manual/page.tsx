@@ -87,7 +87,7 @@ export default function AdminManualDepositPage() {
       }).unwrap();
 
       toast.success(res?.message || "Deposit completed");
-      router.push("/deposits/all");
+      router.push("/dashboard");
     } catch (err: any) {
       toast.error(err?.data?.message || "Deposit failed");
     }

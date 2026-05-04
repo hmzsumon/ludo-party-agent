@@ -12,7 +12,18 @@ export function filterNavItemsByAgentType(items: NavItem[], user: any) {
 
   return items
     .map((item) => {
+      /* ────────── cash withdraw page access
+         শুধু cash type agent sidebar এ দেখতে পারবে।
+      ────────── */
+      if (agentType !== "cash" && item.key === "cash-withdraw") {
+        return null;
+      }
+
       if (agentType === "cash" && item.key === "wallet") {
+        return null;
+      }
+
+      if (agentType === "cash" && item.key === "pending-deposits") {
         return null;
       }
 

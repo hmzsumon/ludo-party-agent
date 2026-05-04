@@ -30,6 +30,13 @@ export const withdrawApi = apiSlice.injectEndpoints({
       providesTags: ["Withdraws"],
     }),
 
+    // cash withdraw search by unique 6 character code
+    getCashWithdrawByCode: builder.query<any, string>({
+      query: (code) =>
+        `/agent/cash-withdraw/by-code?code=${encodeURIComponent(code)}`,
+      providesTags: ["Withdraws"],
+    }),
+
     // approve withdraw request
     approveWithdraw: builder.mutation<any, any>({
       query: (body) => ({
@@ -73,6 +80,7 @@ export const {
   useGetMyWithdrawRequestsQuery,
   useGetAllWithdrawRequestsQuery,
   useGetSingleWithdrawRequestQuery,
+  useGetCashWithdrawByCodeQuery,
   useApproveWithdrawMutation,
   useRejectWithdrawMutation,
   useGetPendingWithdrawsQuery,
