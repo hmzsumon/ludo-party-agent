@@ -41,7 +41,7 @@ export default function RecentTransactionsList() {
   const deposits: UnifiedTx[] = (depositRes?.deposits ?? []).map((d: any) => ({
     id: d._id,
     type: "deposit",
-    orderId: d._id?.slice(-9) || d.orderId || d._id,
+    orderId: d.customerId || d.orderId || d._id,
     displayNo: makeDisplayNo(d._id),
     amount: d.amount ?? 0,
     createdAt: d.createdAt ?? "",
@@ -52,7 +52,7 @@ export default function RecentTransactionsList() {
     (w: any) => ({
       id: w._id,
       type: "withdraw",
-      orderId: w._id?.slice(-9) || w._id,
+      orderId: w.customerId || w.orderId || w._id,
       displayNo: makeDisplayNo(w._id),
       amount: w.amount ?? 0,
       createdAt: w.createdAt ?? "",
