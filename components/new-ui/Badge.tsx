@@ -3,7 +3,7 @@
 export default function Badge({
   status,
 }: {
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "cancelled";
 }) {
   const s = {
     pending: {
@@ -18,7 +18,12 @@ export default function Badge({
       text: "Rejected",
       cls: "bg-rose-400/15 text-rose-400 border-rose-400/30",
     },
+    cancelled: {
+      text: "Cancelled",
+      cls: "bg-slate-400/15 text-slate-300 border-slate-400/30",
+    },
   }[status];
+
   return (
     <span className={`rounded-full border px-2 py-0.5 text-xs ${s.cls}`}>
       {s.text}

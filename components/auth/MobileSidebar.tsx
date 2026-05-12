@@ -68,7 +68,9 @@ export default function MobileSidebar({ open, onClose }: Props) {
                 <div className="text-sm font-semibold text-white">
                   {user?.name}
                 </div>
-                <div className="text-xs text-neutral-400">{user?.email}</div>
+                <div className="text-xs text-neutral-400">
+                  {user?.agentTitle}
+                </div>
               </div>
             </div>
 
